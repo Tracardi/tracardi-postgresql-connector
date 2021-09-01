@@ -1,0 +1,1 @@
+Tracardi Plugin to connect Tracardi to PostreSQL database
