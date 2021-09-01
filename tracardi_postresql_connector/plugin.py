@@ -1,13 +1,12 @@
 import json
+import asyncpg
 from datetime import datetime, date
 from typing import Optional
-
-import asyncpg
 from decimal import Decimal
 from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData
 from tracardi_plugin_sdk.action_runner import ActionRunner
 from tracardi_plugin_sdk.domain.result import Result
-from tracardi_postresql_connector.model.redshift import Connection
+from tracardi_postresql_connector.model.postresql import Connection
 
 
 class PostreSQLConnectorAction(ActionRunner):
@@ -31,7 +30,7 @@ class PostreSQLConnectorAction(ActionRunner):
     async def run(self, payload):
         result = await self.db.fetch(self.query, timeout=self.timeout)
         result = [self.to_dict(record) for record in result]
-        return Result(port="payload", value={"result": result})
+        return Result(port="result", value={"result": result})
 
     async def close(self):
         if self.db:
@@ -62,8 +61,8 @@ def register() -> Plugin:
             module='tracardi_postresql_connector.plugin',
             className='PostreSQLConnectorAction',
             inputs=["payload"],
-            outputs=['payload'],
-            version='0.1.2',
+            outputs=['result'],
+            version='0.1',
             license="MIT",
             author="Risto Kowaczewski",
             init={
@@ -78,7 +77,7 @@ def register() -> Plugin:
         ),
         metadata=MetaData(
             name='PostreSQL connector',
-            desc='Connects to spotreSQL and reads data.',
+            desc='Connects to postreSQL and reads data.',
             type='flowNode',
             width=200,
             height=100,
