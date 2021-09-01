@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='tracardi-postresql-connector',
     version='0.1',
-    description='The purpose of this plugin is to connect with amazon redshift',
+    description='The purpose of this plugin is to connect with postresql',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Risto Kowaczewski`',
