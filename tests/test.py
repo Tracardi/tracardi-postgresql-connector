@@ -3,7 +3,7 @@ import os
 import asyncio
 from dotenv import load_dotenv
 
-from tracardi_postresql_connector.plugin import PostreSQLConnectorAction
+from tracardi_postgresql_connector.plugin import PostreSQLConnectorAction
 
 load_dotenv()
 

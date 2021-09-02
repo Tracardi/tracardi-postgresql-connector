@@ -6,7 +6,7 @@ from decimal import Decimal
 from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData
 from tracardi_plugin_sdk.action_runner import ActionRunner
 from tracardi_plugin_sdk.domain.result import Result
-from tracardi_postresql_connector.model.postresql import Connection
+from tracardi_postgresql_connector.model.postresql import Connection
 
 
 class PostreSQLConnectorAction(ActionRunner):
@@ -58,11 +58,11 @@ def register() -> Plugin:
     return Plugin(
         start=False,
         spec=Spec(
-            module='tracardi_postresql_connector.plugin',
+            module='tracardi_postgresql_connector.plugin',
             className='PostreSQLConnectorAction',
             inputs=["payload"],
             outputs=['result'],
-            version='0.1',
+            version='0.1.2',
             license="MIT",
             author="Risto Kowaczewski",
             init={

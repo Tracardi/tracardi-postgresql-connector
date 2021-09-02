@@ -3,4 +3,4 @@ python -m twine upload dist/*
 
 rm -rf build
 rm -rf dist
-rm -rf tracardi_postresql_connector.egg-info
+rm -rf tracardi_postgresql_connector.egg-info

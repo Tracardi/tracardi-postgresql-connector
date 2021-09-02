@@ -1,1 +1,1 @@
-recursive-include tracardi_postresql_connector/model *
+recursive-include tracardi_postgresql_connector/model *
