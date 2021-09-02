@@ -68,7 +68,7 @@ def register() -> Plugin:
             init={
                 "host": 'localhost',
                 "port": 5439,
-                "dbname": None,
+                "database": None,
                 "user": None,
                 "password": None,
                 "query": None

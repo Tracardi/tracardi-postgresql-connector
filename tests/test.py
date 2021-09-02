@@ -8,7 +8,7 @@ from tracardi_postgresql_connector.plugin import PostreSQLConnectorAction
 load_dotenv()
 
 init = dict(
-    dbname='dev',
+    database='dev',
     user=os.environ['LOGIN'],
     password=os.environ['PASS'],
     host=os.environ['IP'],
