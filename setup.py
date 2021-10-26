@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='tracardi-postgresql-connector',
     version='0.6.0',
-    description='The purpose of this plugin is to connect with postresql',
+    description='The purpose of this plugin is to connect with postreSQL',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Risto Kowaczewski`',
