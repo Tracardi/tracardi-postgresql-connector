@@ -1,5 +1,5 @@
 import asyncpg
-from pydantic.main import BaseModel
+from pydantic import BaseModel
 
 
 class Connection(BaseModel):
@@ -7,7 +7,7 @@ class Connection(BaseModel):
     user: str
     password: str
     host: str = 'localhost'
-    port: int = 5439
+    port: int = 5432
 
     async def connect(self) -> asyncpg.connection.Connection:
         return await asyncpg.connect(database=self.database,

@@ -15,7 +15,8 @@ setup(
     install_requires=[
         'pydantic',
         'asyncio',
-        'tracardi-plugin-sdk',
+        'tracardi',
+        'tracardi-plugin-sdk>0.6.22',
         'asyncpg'
     ],
     classifiers=[

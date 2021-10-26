@@ -3,29 +3,34 @@ import asyncpg
 from datetime import datetime, date
 from typing import Optional
 from decimal import Decimal
-from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData
+
+from tracardi.service.storage.driver import storage
+from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData, Form, FormGroup, FormField, FormComponent
 from tracardi_plugin_sdk.action_runner import ActionRunner
 from tracardi_plugin_sdk.domain.result import Result
+
+from tracardi_postgresql_connector.model.configuration import Configuration
 from tracardi_postgresql_connector.model.postresql import Connection
+
+
+def validate(config: dict) -> Configuration:
+    return Configuration(**config)
 
 
 class PostreSQLConnectorAction(ActionRunner):
 
     @staticmethod
     async def build(**kwargs) -> 'PostreSQLConnectorAction':
-        plugin = PostreSQLConnectorAction(**kwargs)
-        connection = Connection(**kwargs)
-        plugin.db = await connection.connect()
+        config = validate(kwargs)
+        source = await storage.driver.resource.load(config.source.id)
+        connection = Connection(**source.config)
+        connection = await connection.connect()
+        return PostreSQLConnectorAction(connection, config)
 
-        return plugin
-
-    def __init__(self, **kwargs):
-        self.db = None  # type: Optional[asyncpg.connection.Connection]
-        if 'query' not in kwargs:
-            raise ValueError("Please define query.")
-
-        self.query = kwargs['query']
-        self.timeout = kwargs['timeout'] if 'timeout' in kwargs else None
+    def __init__(self, connection: asyncpg.connection.Connection, config: Configuration):
+        self.db = connection
+        self.query = config.query
+        self.timeout = config.timeout
 
     async def run(self, payload):
         result = await self.db.fetch(self.query, timeout=self.timeout)
@@ -62,17 +67,51 @@ def register() -> Plugin:
             className='PostreSQLConnectorAction',
             inputs=["payload"],
             outputs=['result'],
-            version='0.1.2',
+            version='0.6.0',
             license="MIT",
             author="Risto Kowaczewski",
             init={
-                "host": 'localhost',
-                "port": 5439,
-                "database": None,
-                "user": None,
-                "password": None,
-                "query": None
-            }
+                "source": {"id": None},
+                "query": None,
+                "timeout": 20
+            },
+            form=Form(groups=[
+                FormGroup(
+                    name="PostreSQL resource",
+                    fields=[
+                        FormField(
+                            id="source",
+                            name="PostreSQL resource",
+                            description="Select PostreSQL resource. Authentication credentials will be used to "
+                                        "connect to PostreSQL server.",
+                            component=FormComponent(
+                                type="resource",
+                                props={"label": "resource"})
+                        )
+                    ]
+                ),
+                FormGroup(
+                    name="Query settings",
+                    fields=[
+                        FormField(
+                            id="query",
+                            name="Query",
+                            description="Type SQL Query.",
+                            component=FormComponent(type="sql", props={
+                                "label": "SQL query"
+                            })
+                        ),
+                        FormField(
+                            id="timeout",
+                            name="Timeout",
+                            description="Type query timeout.",
+                            component=FormComponent(type="text", props={
+                                "label": "Timeout",
+
+                            })
+                        )
+                    ])
+            ]),
 
         ),
         metadata=MetaData(

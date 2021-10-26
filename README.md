@@ -1,1 +1,1 @@
-Tracardi Plugin to connect Tracardi to PostgreSQL database
+# PostgreSQL connector
