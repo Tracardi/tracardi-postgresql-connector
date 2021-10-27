@@ -67,7 +67,7 @@ def register() -> Plugin:
             className='PostreSQLConnectorAction',
             inputs=["payload"],
             outputs=['result'],
-            version='0.6.0',
+            version='0.6.1',
             license="MIT",
             author="Risto Kowaczewski",
             init={
