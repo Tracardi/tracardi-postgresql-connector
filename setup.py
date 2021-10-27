@@ -9,7 +9,7 @@ setup(
     description='The purpose of this plugin is to connect with postreSQL',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Risto Kowaczewski`',
+    author='Risto Kowaczewski, Bartosz Dobrosielski',
     author_email='risto.kowaczewski@gmail.com',
     packages=['tracardi_postgresql_connector'],
     install_requires=[
