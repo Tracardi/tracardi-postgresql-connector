@@ -1,9 +1,8 @@
 import json
-import asyncpg
 from datetime import datetime, date
-from typing import Optional
 from decimal import Decimal
 
+from tracardi.domain.resource import ResourceCredentials
 from tracardi.service.storage.driver import storage
 from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData, Form, FormGroup, FormField, FormComponent
 from tracardi_plugin_sdk.action_runner import ActionRunner
@@ -22,13 +21,12 @@ class PostreSQLConnectorAction(ActionRunner):
     @staticmethod
     async def build(**kwargs) -> 'PostreSQLConnectorAction':
         config = validate(kwargs)
-        source = await storage.driver.resource.load(config.source.id)
-        connection = Connection(**source.config)
-        connection = await connection.connect()
-        return PostreSQLConnectorAction(connection, config)
+        resource = await storage.driver.resource.load(config.source.id)
+        return PostreSQLConnectorAction(config, resource.credentials)
 
-    def __init__(self, connection: asyncpg.connection.Connection, config: Configuration):
-        self.db = connection
+    def __init__(self, config: Configuration, credentials: ResourceCredentials):
+        connection = credentials.get_credentials(self, Connection)  # type: Connection
+        self.db = await connection.connect()
         self.query = config.query
         self.timeout = config.timeout
 
@@ -55,8 +53,7 @@ class PostreSQLConnectorAction(ActionRunner):
 
             return str(obj)
 
-        j = json.dumps(dict(record), default=json_default)
-        return json.loads(j)
+        return json.loads(json.dumps(dict(record), default=json_default))
 
 
 def register() -> Plugin:
@@ -67,7 +64,7 @@ def register() -> Plugin:
             className='PostreSQLConnectorAction',
             inputs=["payload"],
             outputs=['result'],
-            version='0.6.1',
+            version='0.6.0.1',
             license="MIT",
             author="Risto Kowaczewski",
             init={
@@ -86,7 +83,7 @@ def register() -> Plugin:
                                         "connect to PostreSQL server.",
                             component=FormComponent(
                                 type="resource",
-                                props={"label": "resource"})
+                                props={"label": "resource", "tag": "postgesql"})
                         )
                     ]
                 ),

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='tracardi-postgresql-connector',
-    version='0.6.1',
+    version='0.6.0.1',
     description='The purpose of this plugin is to connect with postreSQL',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -15,8 +15,8 @@ setup(
     install_requires=[
         'pydantic',
         'asyncio',
-        'tracardi>=0.6.19',
-        'tracardi-plugin-sdk>=0.6.22',
+        'tracardi',
+        'tracardi-plugin-sdk>=0.6.30',
         'asyncpg'
     ],
     classifiers=[
