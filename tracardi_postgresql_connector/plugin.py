@@ -2,6 +2,7 @@ import json
 from datetime import datetime, date
 from decimal import Decimal
 
+import asyncpg
 from tracardi.domain.resource import ResourceCredentials
 from tracardi.service.storage.driver import storage
 from tracardi_plugin_sdk.domain.register import Plugin, Spec, MetaData, Form, FormGroup, FormField, FormComponent
@@ -22,11 +23,12 @@ class PostreSQLConnectorAction(ActionRunner):
     async def build(**kwargs) -> 'PostreSQLConnectorAction':
         config = validate(kwargs)
         resource = await storage.driver.resource.load(config.source.id)
-        return PostreSQLConnectorAction(config, resource.credentials)
+        connection = resource.credentials.get_credentials("todo", Connection)  # type: Connection
+        db = await connection.connect()
+        return PostreSQLConnectorAction(config, db)
 
-    def __init__(self, config: Configuration, credentials: ResourceCredentials):
-        connection = credentials.get_credentials(self, Connection)  # type: Connection
-        self.db = await connection.connect()
+    def __init__(self, config: Configuration, db: asyncpg.connection.Connection):
+        self.db = db
         self.query = config.query
         self.timeout = config.timeout
 
